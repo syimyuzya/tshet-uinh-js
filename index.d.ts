@@ -1621,6 +1621,12 @@ declare namespace 推導方案 {
         parameters: 選項列表;
         defaultOptions: 推導選項;
     };
+    /**
+     * 將原始推導方案函數包裝成易於使用的函數，並分析其所提供推導選項等。
+     *
+     * @param rawFunction 推導方案原始函數。
+     * @returns 包裝後的函數，並含有選項等信息。
+     */
     function 建立<T>(rawFunction: 原始推導函數<T>): 推導函數<T>;
 }
 export { 音韻地位, 資料, 適配分析體系, 適配函數, 適配分析體系選項, 表達式, 推導方案 };
