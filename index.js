@@ -1820,7 +1820,7 @@ iwA虛陵興蒸盛也舉也善也說文曰起也从舁从同同力也亦州名�
 YwA處陵稱蒸知輕重也說文曰銓也又姓漢功臣表有新山侯稱忠處陵切又昌證切三|爯蒸并舉也|偁蒸宣揚美事又言也好也揚也舉也足也\
 fwA其矜殑蒸殑㱡欲死狀其矜切又其拯切二|䔷蒸草名根可緣竹器又音琴\
 VwA山矜㱡蒸殑㱡山矜切一\
-ewA綺兢硱蒸硱磳石皃綺兢切又苦本切一\
+ewU綺兢硱蒸硱磳石皃綺兢切又苦本切一\
 KwA丑升僜蒸醉行皃丑升切三|庱蒸亭名在吳興孫權射虎處又丑拯切|睖蒸睖瞪直視\
 UwA仕兢磳蒸硱磳仕兢切一\
 BwA披冰砯蒸水擊山巖聲披冰切一\
@@ -5268,6 +5268,9 @@ K8D丑法𦑣乏𦑣䎎飛上皃丑法切一\
       let rawParameters;
       try {
           rawParameters = rawFunction();
+          if (!Array.isArray(rawParameters)) {
+              rawParameters = [];
+          }
       }
       catch (_a) {
           rawParameters = [];
