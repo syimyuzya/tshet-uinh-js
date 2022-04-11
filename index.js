@@ -4830,7 +4830,7 @@ K8D丑法𦑣乏𦑣䎎飛上皃丑法切一\
    *
    * 該體系包含所有（已支持的）其他體系需要的對立，且標準化，故其他適配均以 v2ext 作為中介體系。
    */
-  function 適配v2ext(地位, 嚴格 = false, 原地位脣音寒歌默認開合) {
+  function 適配v2ext(地位, 嚴格, 原地位脣音寒歌默認開合) {
       const 原描述 = 地位.描述;
       const is = (...xs) => 地位.屬於(...xs);
       const reject = (msg) => {
@@ -4853,14 +4853,11 @@ K8D丑法𦑣乏𦑣䎎飛上皃丑法切一\
       }
       // 呼：脣音、中立韻
       if (地位.呼 && is `幫組 寒歌韻`) {
-          if (!原地位脣音寒歌默認開合) {
-              reject('呼 is ambiguous for 脣音寒歌韻, set 原地位脣音寒歌默認開合 to "開" or "合" to normalize it');
-          }
-          else if (原地位脣音寒歌默認開合 === '開' && is `合口`) {
-              reject(`unexpected 合口 for 脣音${地位.韻}韻`);
-          }
-          else if (!(原地位脣音寒歌默認開合 === '合' && is `開口`)) {
+          if (地位.呼 === 原地位脣音寒歌默認開合) {
               調整({ 呼: null }, 'unexpected 呼');
+          }
+          else if (is `合口`) {
+              reject(`unexpected 合口 for 脣音${地位.韻}韻`);
           }
       }
       else if (開合中立的韻.includes(地位.韻) || is `幫組`) {
@@ -5056,18 +5053,26 @@ K8D丑法𦑣乏𦑣䎎飛上皃丑法切一\
           return x => x;
       }
       選項 = 選項 !== null && 選項 !== void 0 ? 選項 : {};
-      const { 原地位脣音寒歌默認開合 = null } = 選項;
-      let { 嚴格 = false } = 選項;
+      let { 嚴格 = false, 原地位脣音寒歌默認開合 } = 選項;
       if (分析體系.endsWith('Strict') && PRESETS[分析體系.slice(0, -6)]) {
           分析體系 = 分析體系.slice(0, -6);
           嚴格 = true;
       }
-      if (分析體系 === 'v2ext') {
-          return 地位 => 適配v2ext(地位, 嚴格, 原地位脣音寒歌默認開合);
-      }
       const 參數 = PRESETS[分析體系];
       if (!參數) {
           throw new Error(`unknown 分析體系: ${分析體系}`);
+      }
+      if (嚴格) {
+          if (原地位脣音寒歌默認開合) {
+              throw new Error('unexpected 原地位脣音寒歌默認開合 when 嚴格 = true');
+          }
+          原地位脣音寒歌默認開合 = 參數.呼_脣音 === 'require切韻' ? '開' : '合';
+      }
+      else {
+          原地位脣音寒歌默認開合 = 原地位脣音寒歌默認開合 !== null && 原地位脣音寒歌默認開合 !== void 0 ? 原地位脣音寒歌默認開合 : '合';
+      }
+      if (分析體系 === 'v2ext') {
+          return 地位 => 適配v2ext(地位, 嚴格, 原地位脣音寒歌默認開合);
       }
       return function (地位) {
           const 原地位 = 地位;
@@ -5219,7 +5224,6 @@ K8D丑法𦑣乏𦑣䎎飛上皃丑法切一\
   適配分析體系.v2lenient = 適配分析體系('v2lenient');
   適配分析體系.v2ext = 適配分析體系('v2ext');
   適配分析體系.v2extStrict = 適配分析體系('v2extStrict');
-  適配分析體系.v2extFromYtenx = 適配分析體系('v2ext', { 原地位脣音寒歌默認開合: '合' });
   適配分析體系.v2extFromPoem = 適配分析體系('v2ext', { 原地位脣音寒歌默認開合: '開' });
 
   /**
