@@ -2,7 +2,7 @@
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Qieyun = {}));
-}(this, (function (exports) { 'use strict';
+})(this, (function (exports) { 'use strict';
 
   const 母到清濁 = {
       幫: '全清',
@@ -4808,9 +4808,9 @@ K8D丑法𦑣乏𦑣䎎飛上皃丑法切一\
 
   var ____$1 = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    iter音韻地位: iter音韻地位,
-    query字頭: query字頭,
-    query音韻地位: query音韻地位
+    'iter音韻地位': iter音韻地位,
+    'query字頭': query字頭,
+    'query音韻地位': query音韻地位
   });
 
   const 端知組對應 = {};
@@ -5006,7 +5006,7 @@ K8D丑法𦑣乏𦑣䎎飛上皃丑法切一\
    * * 類隔：
    *   * 端知：
    *     * 所有體系均允許「地」
-   *     * v2 額外認可「爹」「打」，其餘視為混切
+   *     * v2 額外認可「爹」「打」「箉」，其餘視為混切
    *     * poem 除「地」外均視為混切
    *     * ytenx 認可跨等搭配
    *   * 章組云以日母蟹攝平上：
@@ -5266,12 +5266,12 @@ K8D丑法𦑣乏𦑣䎎飛上皃丑法切一\
 
   var _____ = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    重紐母: 重紐母,
-    重紐韻: 重紐韻,
-    分開合韻: 分開合韻,
-    開口韻: 開口韻,
-    合口韻: 合口韻,
-    開合中立韻: 開合中立韻
+    '重紐母': 重紐母,
+    '重紐韻': 重紐韻,
+    '分開合韻': 分開合韻,
+    '開口韻': 開口韻,
+    '合口韻': 合口韻,
+    '開合中立韻': 開合中立韻
   });
 
   const 適配poem = 適配分析體系('poem');
@@ -5351,16 +5351,16 @@ K8D丑法𦑣乏𦑣䎎飛上皃丑法切一\
 
   var ____ = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    建立: 建立
+    '建立': 建立
   });
 
-  exports.推導方案 = ____;
-  exports.表達式 = _____;
-  exports.資料 = ____$1;
-  exports.適配分析體系 = 適配分析體系;
-  exports.音韻地位 = 音韻地位;
+  exports["推導方案"] = ____;
+  exports["表達式"] = _____;
+  exports["資料"] = ____$1;
+  exports["適配分析體系"] = 適配分析體系;
+  exports["音韻地位"] = 音韻地位;
 
   Object.defineProperty(exports, '__esModule', { value: true });
 
-})));
+}));
 //# sourceMappingURL=index.js.map

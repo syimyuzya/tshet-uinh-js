@@ -1,5 +1,8 @@
 type Falsy = "" | 0 | false | null | undefined;
-type Rules<T> = [unknown, T | Rules<T>][];
+type Rules<T> = [
+    unknown,
+    T | Rules<T>
+][];
 /**
  * 《切韻》音系音韻地位。
  *
@@ -473,7 +476,10 @@ declare class 音韻地位 {
 }
 declare namespace 資料 {
     type Falsy = "" | 0 | false | null | undefined;
-    type Rules<T> = [unknown, T | Rules<T>][];
+    type Rules<T> = [
+        unknown,
+        T | Rules<T>
+    ][];
     /**
      * 《切韻》音系音韻地位。
      *
@@ -1061,7 +1067,7 @@ type 適配函數 = (地位: 音韻地位) => 音韻地位;
  * * 類隔：
  *   * 端知：
  *     * 所有體系均允許「地」
- *     * v2 額外認可「爹」「打」，其餘視為混切
+ *     * v2 額外認可「爹」「打」「箉」，其餘視為混切
  *     * poem 除「地」外均視為混切
  *     * ytenx 認可跨等搭配
  *   * 章組云以日母蟹攝平上：
@@ -1138,7 +1144,10 @@ declare namespace 表達式 {
 }
 declare namespace 推導方案 {
     type Falsy = "" | 0 | false | null | undefined;
-    type Rules<T> = [unknown, T | Rules<T>][];
+    type Rules<T> = [
+        unknown,
+        T | Rules<T>
+    ][];
     /**
      * 《切韻》音系音韻地位。
      *
@@ -1610,7 +1619,10 @@ declare namespace 推導方案 {
          */
         static from描述(音韻描述: string): 音韻地位;
     }
-    type 選項列表 = [string, unknown][];
+    type 選項列表 = [
+        string,
+        unknown
+    ][];
     type 推導選項 = {
         [x: string]: unknown;
     };
@@ -1641,4 +1653,5 @@ declare namespace 推導方案 {
      */
     function 建立<T>(rawFunction: 原始推導函數<T>): 推導函數<T>;
 }
-export { 音韻地位, 資料, 適配分析體系, 適配函數, 適配分析體系選項, 表達式, 推導方案 };
+export { 音韻地位, 資料, 適配分析體系, 表達式, 推導方案 };
+export type { 適配函數, 適配分析體系選項 };
