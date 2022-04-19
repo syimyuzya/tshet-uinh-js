@@ -4735,13 +4735,16 @@ K8D丑法𦑣乏𦑣䎎飛上皃丑法切一\
   const m字頭檢索 = new Map();
   const m音韻編碼檢索 = new Map();
   (function 解析資料() {
-      const patternOuter = /([\w$]{3})([^\w$]{2})([^\w$]+)/gu;
+      // NOTE: Due to unknown issues in the bundler of qieyun-autoderiver,
+      // writing `[^\w$]{2}` will make it fail to handle Unicode surrogate pairs in production build, even with the `u` flag.
+      const patternOuter = /([\w$]{3})((?:(?![\w$]).){2})((?:(?![\w$]).)+)/gu;
       let matchOuter;
       while ((matchOuter = patternOuter.exec(資料)) != null) {
           const [, 編碼, 反切_, 條目] = matchOuter;
           // '@@' is a placeholder in the original data to indicate that there is no 反切
           const 反切 = 反切_ === '@@' ? null : 反切_;
-          const patternInner = /([^|])([^|])([^|]*)/gu;
+          // NOTE: See above
+          const patternInner = /((?!\|).)((?!\|).)((?:(?!\|).)*)/gu;
           let matchInner;
           while ((matchInner = patternInner.exec(條目)) != null) {
               const [, 字頭, 韻部原貌, 解釋] = matchInner;
