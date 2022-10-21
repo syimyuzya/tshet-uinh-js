@@ -459,8 +459,8 @@
                       throw new Error(`unrecognized expression: ${token}`);
                   }
                   const { kv, k1, v1, k2, v2 } = match.groups;
-                  const k = k1 ?? k2;
-                  const v = v1 ?? v2;
+                  const k = k1 !== null && k1 !== void 0 ? k1 : k2;
+                  const v = v1 !== null && v1 !== void 0 ? v1 : v2;
                   if (kv) {
                       if (kv === '開合中立')
                           set('呼', null);
@@ -804,6 +804,7 @@
        * @throws 若地位不合法，會拋出異常。
        */
       static 驗證(母, 呼, 等, 重紐, 韻, 聲, 邊緣地位例外) {
+          var _a;
           const tipIncompatible = " (note: use nk2028's data to avoid compatibility issues)";
           const reject = (msg) => {
               throw new Error(`invalid 音韻地位 <${母},${呼 || ''},${等},${重紐 || ''},${韻},${聲}>: ` + msg);
@@ -821,10 +822,10 @@
                   if (屬性 === '韻' && [...'諄桓戈'].includes(值)) {
                       reject(`unexpected ${值}韻${tipIncompatible}`);
                   }
-                  const suggestion = {
+                  const suggestion = (_a = {
                       母: { 娘: '孃', 群: '羣' },
                       韻: { 眞: '真', 欣: '殷' },
-                  }[屬性]?.[值];
+                  }[屬性]) === null || _a === void 0 ? void 0 : _a[值];
                   reject(`unrecognized ${屬性}: ${值}` + (suggestion ? ` (did you mean: ${suggestion}?)` : ''));
               }
           }
@@ -934,7 +935,7 @@
           }
           // 邊緣搭配
           // 已知邊緣地位（或特別指定跳過檢查），跳過搭配驗證
-          if (邊緣地位例外 === _Unchecked || 已知例外地位.has(母 + (呼 ?? '') + 等 + (重紐 ?? '') + 韻 + 聲)) {
+          if (邊緣地位例外 === _Unchecked || 已知例外地位.has(母 + (呼 !== null && 呼 !== void 0 ? 呼 : '') + 等 + (重紐 !== null && 重紐 !== void 0 ? 重紐 : '') + 韻 + 聲)) {
               return;
           }
           // 嚴格邊緣地位
@@ -4924,7 +4925,8 @@ K8T丑法𦑣乏𦑣䎎飛上皃丑法切一\
    * ```
    */
   function query字頭(字頭) {
-      return m字頭檢索.get(字頭)?.map(({ 編碼, ...其他 }) => ({ 音韻地位: 音韻地位.from編碼(編碼), ...其他 })) ?? [];
+      var _a, _b;
+      return (_b = (_a = m字頭檢索.get(字頭)) === null || _a === void 0 ? void 0 : _a.map(({ 編碼, ...其他 }) => ({ 音韻地位: 音韻地位.from編碼(編碼), ...其他 }))) !== null && _b !== void 0 ? _b : [];
   }
   /**
    * 音韻地位對應的字頭、反切、解釋。
@@ -4938,7 +4940,8 @@ K8T丑法𦑣乏𦑣䎎飛上皃丑法切一\
    * ```
    */
   function query音韻地位(地位) {
-      return m音韻編碼檢索.get(地位.編碼) ?? [];
+      var _a;
+      return (_a = m音韻編碼檢索.get(地位.編碼)) !== null && _a !== void 0 ? _a : [];
   }
 
   var ____ = /*#__PURE__*/Object.freeze({

@@ -14,4 +14,4 @@ mv package/* .
 rm -d package
 git rm --cached -r .
 git add .
-git commit -m "Dist for dev-0.13 ${commit_hash}"
+git commit -m "Dist for dev-0.14 ${commit_hash}"
