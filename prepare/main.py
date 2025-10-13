@@ -102,8 +102,8 @@ def main():
     with open('prepare/data.csv') as fin:
         next(fin)
         max原書小韻號: int = 0
-        cur音韻: dict[str, tuple[str, str, str]]
-        cur內容: list[條目Record]
+        cur音韻: dict[str, tuple[str, str, str]] = {}
+        cur內容: list[條目Record] = []
         cur原書字號: int = 0
         cur增字號: int = 0
         for row in csv.reader(fin):
