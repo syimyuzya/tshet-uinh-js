@@ -31,8 +31,9 @@
     "cov:lcov": "nyc report --reporter=lcov",
     "cov:send": "run-s cov:lcov && codecov",
     "cov:check": "nyc report && nyc check-coverage --lines 100 --functions 100 --branches 100",
-    "doc": "run-s doc:html && open-cli docs/index.html",
-    "doc:html": "typedoc src/index.ts --out docs",
+    "doc": "run-s doc:html-dev && open-cli docs/index.html",
+    "doc:html-dev": "typedoc src/index.ts --out docs",
+    "doc:html": "typedoc src/index.ts --out docs --plugin ./typedoc_cf_analytics.mjs",
     "doc:json": "typedoc src/index.ts --json docs/typedoc.json",
     "reset-hard": "git clean -dfx && git reset --hard && npm i",
     "prepare-release": "run-s reset-hard test cov:check doc:html"

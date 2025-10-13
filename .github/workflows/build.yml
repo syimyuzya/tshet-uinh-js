@@ -37,6 +37,4 @@ jobs:
     - name: Test
       run: npm test
     - name: Build documentation
-      run: |
-        npm run doc:html
-        ./inject_cf_analytics.sh
+      run: npm run doc:html

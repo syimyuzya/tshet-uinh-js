@@ -32,10 +32,7 @@ jobs:
     - name: Build
       run: npm run build
     - name: Build documentation
-      run: |
-        npm run doc:html
-        ./inject_cf_analytics.sh
-        touch docs/.nojekyll
+      run: npm run doc:html
     - name: Upload Artifact
       uses: actions/upload-pages-artifact@v3
       with:
