@@ -186,7 +186,7 @@ export class 資料條目Common {
    * @see {@link 反切詳情}
    */
   反切原貌(): string | null {
-    return this.反切?.replace(/［.］|〈.〉|〘.〙|（.）|｟.｠|｛|｝/g, '') ?? null;
+    return this.反切?.replace(/［.］|〈.〉|（.）|〘.〙|〖.〗|｟.｠|｛|｝/ug, '') ?? null;
   }
   /**
    * 反切校正。注意有個別反切原本用字不詳，故可能含有「？」（全形問號）。
@@ -295,8 +295,9 @@ function parse詳情(chars: string[]): string[][] {
         i += 3;
         break;
       case '〈':
-      case '〘':
       case '（':
+      case '〘':
+      case '〖':
       case '｟':
         result[result.length - 1].push(chars.slice(i, i + 3).join(''));
         i += 3;
