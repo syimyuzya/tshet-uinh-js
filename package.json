@@ -39,7 +39,7 @@
     "prepare-release": "run-s reset-hard test cov:check doc:html"
   },
   "engines": {
-    "node": "^18.18 || ^20.9 || ^21 || >=22"
+    "node": "^20.9 || ^22 || >=24"
   },
   "repository": {
     "type": "git",

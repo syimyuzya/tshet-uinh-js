@@ -223,9 +223,10 @@ export class 資料條目Common {
    *
    * 若無釋義上下文，則回傳的列表僅包含一項，為該條目自身。
    */
-  expand釋義上下文(): 資料條目Common[] {
-    function 資料條目withCloned釋義上下文(...[raw]: ConstructorParameters<typeof 資料條目Common>): 資料條目Common {
-      const res = new 資料條目Common(raw);
+  expand釋義上下文(): this[] {
+    type This = this;
+    function 資料條目withCloned釋義上下文(...[raw]: ConstructorParameters<typeof 資料條目Common>): This {
+      const res = new 資料條目Common(raw) as This;
       if (res.釋義上下文) {
         res.釋義上下文 = res.釋義上下文.map(x => new 上下文條目(x));
       }

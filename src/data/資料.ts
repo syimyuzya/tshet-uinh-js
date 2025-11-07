@@ -9,9 +9,10 @@ import { 廣韻條目 } from './廣韻';
 import * as 廣韻impl from './廣韻impl';
 import { 內部廣韻條目 } from './廣韻impl';
 
-export { 上下文條目, 資料條目Common } from './common';
 export * as 切韻 from './切韻';
 export * as 廣韻 from './廣韻';
+
+export type { 上下文條目, 資料條目Common } from './common';
 
 /**
  * @see {@link 資料條目Common}
@@ -94,11 +95,46 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
 }
 
 /**
- * 由字頭查出相應的音韻地位、反切、解釋。
- * @param 字頭 待查找的漢字
+ * 查詢音韻地位對應的字頭、反切、解釋。
+ *
+ * @param 地位 待查詢的音韻地位
+ *
  * @returns 陣列，每一項包含音韻地位和解釋
  *
- * 若查不到該字，則回傳空陣列。
+ * 若音韻地位有音無字，則值為空陣列。
+ * @example
+ * ```typescript
+ * > 地位 = TshetUinh.音韻地位.from描述('影開二銜去');
+ * > TshetUinh.資料.query音韻地位(地位);
+ * [ {
+ *   '來源': '廣韻',
+ *   '音韻地位': 音韻地位<影開二銜去>,
+ *   '字頭': '𪒠',
+ *   '字頭說明': null,
+ *   '小韻號': '3177',
+ *   '小韻字號': '1',
+ *   '韻目': '鑑',
+ *   '反切': null,
+ *   '直音': '黯去聲',
+ *   '釋義': '叫呼仿佛𪒠然自得音黯去聲一',
+ *   '釋義上下文': null
+ * } ]
+ * ```
+ */
+export function query音韻地位(地位: 音韻地位): 資料條目[] {
+  return m音韻編碼檢索.get(encode音韻編碼(地位))?.map(條目from內部條目) ?? [];
+}
+
+// TODO 更新
+/**
+ * 由字頭查出相應的條目，包含音韻地位、反切、釋義等信息。
+ *
+ * 查詢結果預設除了所查字頭的條目外，還會一並含有其所在上下文的條目（如「上同」「俗」「古文」等多個字頭共用釋義時）。若不想包含上下文，可在 `選項` 引數中指定 `上下文: false`（此時上下文情報需透過條目的 {@linkcode 資料條目Common.釋義上下文 | 釋義上下文} 屬性取得）。
+ *
+ * @param 字頭 要查的字
+ * @param 選項 查詢選項
+ * @returns 查到的所有條目。若查不到條目，則回傳空陣列。
+ *
  * @example
  * ```typescript
  * > TshetUinh.資料.query字頭('結');
@@ -115,6 +151,7 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
  *   釋義: '締也古屑切十五',
  *   釋義上下文: null
  * } ]
+ *
  * > TshetUinh.資料.query字頭('冷');
  * [
  *   {
@@ -157,39 +194,209 @@ export function* iter音韻地位(): IterableIterator<音韻地位> {
  *     釋義上下文: null
  *   }
  * ]
- * ```
- */
-export function query字頭(字頭: string): 資料條目[] {
-  return m字頭檢索.get(字頭)?.map(條目from內部條目) ?? [];
-}
-
-/**
- * 查詢音韻地位對應的字頭、反切、解釋。
  *
- * @param 地位 待查詢的音韻地位
+ * > TshetUinh.資料.query字頭('菱');
+ * [
+ *   {
+ *     音韻地位: 音韻地位<來開三蒸平>,
+ *     字頭: '蔆',
+ *     字頭說明: null,
+ *     小韻號: '949',
+ *     小韻字號: '7',
+ *     韻目: '蒸',
+ *     反切: '力膺',
+ *     直音: null,
+ *     釋義: '芰也',
+ *     釋義上下文: [ ... ],
+ *     來源: '廣韻'
+ *   },
+ *   {
+ *     音韻地位: 音韻地位<來開三蒸平>,
+ *     字頭: '菱',
+ *     小韻號: '949',
+ *     小韻字號: '8',
+ *     釋義: null,
+ *     釋義上下文: [ ... ],
+ *     ... // other properties same as above
+ *   },
+ *   {
+ *     音韻地位: 音韻地位<來開三蒸平>,
+ *     字頭: '䔖',
+ *     小韻號: '949',
+ *     小韻字號: '9',
+ *     釋義: '並同',
+ *     釋義上下文: [ ... ],
+ *     ... // other properties same as above
+ *   }
+ * ]
  *
- * @returns 陣列，每一項包含音韻地位和解釋
- *
- * 若音韻地位有音無字，則值為空陣列。
- * @example
- * ```typescript
- * > 地位 = TshetUinh.音韻地位.from描述('影開二銜去');
- * > TshetUinh.資料.query音韻地位(地位);
+ * > TshetUinh.資料.query字頭('菱', { 上下文: false });
  * [ {
- *   '來源': '廣韻',
- *   '音韻地位': 音韻地位<影開二銜去>,
- *   '字頭': '𪒠',
- *   '字頭說明': null,
- *   '小韻號': '3177',
- *   '小韻字號': '1',
- *   '韻目': '鑑',
- *   '反切': null,
- *   '直音': '黯去聲',
- *   '釋義': '叫呼仿佛𪒠然自得音黯去聲一',
- *   '釋義上下文': null
+ *   音韻地位: 音韻地位<來開三蒸平>,
+ *   字頭: '菱',
+ *   字頭說明: null,
+ *   小韻號: '949',
+ *   小韻字號: '8',
+ *   韻目: '蒸',
+ *   反切: '力膺',
+ *   直音: null,
+ *   釋義: null,
+ *   釋義上下文: [
+ *     { '字頭': '蔆', '字頭說明': null, '小韻字號': '7', '釋義': '芰也' },
+ *     { '字頭': '菱', '字頭說明': null, '小韻字號': '8', '釋義': null },
+ *     { '字頭': '䔖', '字頭說明': null, '小韻字號': '9', '釋義': '並同' }
+ *   ],
+ *   來源: '廣韻'
  * } ]
  * ```
  */
-export function query音韻地位(地位: 音韻地位): 資料條目[] {
-  return m音韻編碼檢索.get(encode音韻編碼(地位))?.map(條目from內部條目) ?? [];
+export function query字頭(字頭: string, 選項?: Query字頭Options): 資料條目[];
+/**
+ * 由字頭查出相應的條目，並可透過傳入 `異體字頭` 以查出更多可能相關的條目。
+ *
+ * 由 `異體字頭` 查出的額外結果，總是排在由 `字頭` 查出的結果之後。
+ *
+ * @param 字頭 要查的字
+ * @param 異體字頭 陣列，每項為一個要查的異體字頭
+ * @param 選項 查詢選項
+ * @returns 查到的所有條目。若查不到條目，則回傳空陣列。
+ *
+ * @example
+ * ```typescript
+ * > TshetUinh.資料.query字頭('餘', ['余'])
+ * [
+ *   {
+ *     音韻地位: 音韻地位<以開三魚平>,
+ *     字頭: '餘',
+ *     字頭說明: null,
+ *     小韻號: '231',
+ *     小韻字號: '5',
+ *     韻目: '魚',
+ *     反切: '以諸',
+ *     直音: null,
+ *     釋義: '殘也賸也皆也饒也又姓晉有餘頠又漢複姓三氏晉卿韓宣子之後有名餘子者奔於齊號韓餘氏又傳餘氏本自傅說說既爲相其後有留於傅巖者因號傅餘氏秦亂自清河入吳漢興還本郡餘不還者曰傅氏今吳郡有之風俗通云吳公子夫摡奔楚其子在國以夫餘爲氏今百濟王夫餘氏也',
+ *     釋義上下文: null,
+ *     來源: '廣韻'
+ *   },
+ *   {
+ *     音韻地位: 音韻地位<以開三魚平>,
+ *     字頭: '余',
+ *     字頭說明: null,
+ *     小韻號: '231',
+ *     小韻字號: '1',
+ *     韻目: '魚',
+ *     反切: '以諸',
+ *     直音: null,
+ *     釋義: '我也又姓風俗通云秦由余之後何氏姓苑云今新安人以諸切三十',
+ *     釋義上下文: null,
+ *     來源: '廣韻'
+ *   },
+ *   {
+ *     音韻地位: 音韻地位<常開三麻平>,
+ *     字頭: '余',
+ *     字頭說明: null,
+ *     小韻號: '789',
+ *     小韻字號: '2',
+ *     韻目: '麻',
+ *     反切: '視遮',
+ *     直音: null,
+ *     釋義: '姓也見姓苑出南昌郡',
+ *     釋義上下文: null,
+ *     來源: '廣韻'
+ *   }
+ * ]
+ * ```
+ */
+export function query字頭(字頭: string, 異體字頭: string[], 選項?: Query字頭Options): 資料條目[];
+
+export function query字頭(字頭: string, ...args: unknown[]): 資料條目[] {
+  let 異體字頭: string[] = [];
+  let 選項: Required<Query字頭Options> = { 上下文: true };
+  while (args.length && args.at(-1) === undefined) {
+    args.pop();
+  }
+  if (args.length === 1) {
+    if (Array.isArray(args[0])) {
+      異體字頭 = args[0] as string[];
+    } else {
+      選項 = { ...選項, ...args[0] as Query字頭Options };
+    }
+  } else if (args.length > 1) {
+    if (args[0] != null) {
+      異體字頭 = args[0] as string[];
+    }
+    if (args[1]) {
+      選項 = { ...選項, ...args[1] as Query字頭Options };
+    }
+  }
+
+  function lookupInternalIndex(字頭: string): 資料條目[] {
+    return m字頭檢索.get(字頭)?.map(條目from內部條目) ?? [];
+  }
+
+  function keyFor條目(條目: 資料條目): string {
+    return `${條目.來源}/${條目.小韻號}/${條目.小韻字號}`;
+  }
+  function compare條目Order(條目1: 資料條目, 條目2: 資料條目): number {
+    if (條目1.來源 !== 條目2.來源) {
+      return 條目1.來源 < 條目2.來源 ? -1 : 1;
+    }
+    const 原書小韻號1 = 條目1.原書小韻號;
+    const 原書小韻號2 = 條目2.原書小韻號;
+    if (原書小韻號1 !== 原書小韻號2) {
+      return 原書小韻號1 - 原書小韻號2;
+    }
+    const [原書字號1, 增字號1] = 條目1.小韻字號詳情();
+    const [原書字號2, 增字號2] = 條目2.小韻字號詳情();
+    return 原書字號1 !== 原書字號2 ? 原書字號1 - 原書字號2 : 增字號1 - 增字號2;
+  }
+
+  function* flattenExpanded條目(各條目: Iterable<資料條目>): IterableIterator<資料條目> {
+    for (const 條目 of 各條目) {
+      yield* 條目.expand釋義上下文();
+    }
+  }
+
+  function filterAndCollectUnique(
+    各條目: Iterable<資料條目>,
+    filter: (key: string, 條目: 資料條目) => boolean = () => true,
+  ): [資料條目[], Map<string, 資料條目>] {
+    const map = new Map<string, 資料條目>();
+    for (const 條目 of flattenExpanded條目(各條目)) {
+      const key = keyFor條目(條目);
+      if (!map.has(key) && filter(key, 條目)) {
+        map.set(key, 條目);
+      }
+    }
+    const sorted = [...map.values()].sort(compare條目Order);
+    return [sorted, map];
+  }
+
+  const lookupPrimary = lookupInternalIndex(字頭);
+  let resultPrimary: 資料條目[];
+  let primaryKeys: Set<string> | Map<string, unknown>;
+  if (選項.上下文) {
+    [resultPrimary, primaryKeys] = filterAndCollectUnique(flattenExpanded條目(lookupPrimary));
+  } else {
+    // NOTE m字頭檢索 is already sorted
+    resultPrimary = lookupPrimary;
+    primaryKeys = new Set(resultPrimary.map(keyFor條目));
+  }
+
+  let lookupVariants: Iterable<資料條目> = 異體字頭.flatMap(lookupInternalIndex);
+  if (選項.上下文) {
+    lookupVariants = flattenExpanded條目(lookupVariants);
+  }
+  const [resultVariants] = filterAndCollectUnique(lookupVariants, key => !primaryKeys.has(key));
+  return [...resultPrimary, ...resultVariants];
+}
+
+/**
+ * 用於 {@linkcode query字頭} 的選項
+ */
+export interface Query字頭Options {
+  /**
+   * 結果中是否要包含上下文的條目，預設為 `true`
+   */
+  上下文?: boolean;
 }

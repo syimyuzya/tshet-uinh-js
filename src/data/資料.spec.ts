@@ -7,17 +7,21 @@ import { _UNCHECKED, 音韻地位 } from '../lib/音韻地位';
 import { parse字頭詳情 } from './common';
 import { iter音韻地位, query字頭, query音韻地位, 資料條目 } from './資料';
 
-test('查「東」字的反切', t => {
-  const 字頭 = '東';
-  const res = query字頭(字頭);
-  t.is(res.length, 1);
+test('查「東」字', t => {
+  const res = query字頭('東');
+  t.deepEqual(res.map(x => x.字頭), ['東', '菄']);
   t.is(res[0].反切, '德紅');
 });
 
-test('查「拯」字的音切，「拯」字有直音，無反切', t => {
-  const 字頭 = '拯';
-  const res = query字頭(字頭);
+test('查「東」字，不帶上下文', t => {
+  const res = query字頭('東', { 上下文: false });
   t.is(res.length, 1);
+  t.is(res[0].字頭, '東');
+});
+
+test('查「拯」字，「拯」字有直音，無反切', t => {
+  const res = query字頭('拯');
+  t.deepEqual(res.map(x => x.字頭), ['拯', '抍', '撜']);
   t.is(res[0].反切, null);
   t.is(res[0].直音, '蒸上聲');
   t.deepEqual(res[0].反切詳情(), []);
@@ -26,8 +30,8 @@ test('查「拯」字的音切，「拯」字有直音，無反切', t => {
 test('查同地位不同反切', t => {
   const 地位 = 音韻地位.from描述('見開四添去');
   const 條目 = query音韻地位(地位);
-  t.is(條目.find(({ 字頭 }) => 字頭 === '趝')!.反切, '紀念');
-  t.is(條目.find(({ 字頭 }) => 字頭 === '兼')!.反切, '古念');
+  t.is(條目.find(x => x.字頭 === '趝')?.反切, '紀念');
+  t.is(條目.find(x => x.字頭 === '兼')?.反切, '古念');
 });
 
 test('查音韻地位「見合一歌平」，含「戈」、「過」等字', t => {
@@ -35,8 +39,8 @@ test('查音韻地位「見合一歌平」，含「戈」、「過」等字', t 
   t.true(query音韻地位(當前音韻地位).length > 0);
 });
 
-test('查音韻地位「從合三歌平」，有音無字', t => {
-  const 當前音韻地位 = 音韻地位.from描述('從合三歌平');
+test('查音韻地位「見開三A侵平」，有音無字', t => {
+  const 當前音韻地位 = 音韻地位.from描述('見開三A侵平');
   t.is(query音韻地位(當前音韻地位).length, 0);
 });
 
@@ -110,13 +114,13 @@ test('.字頭詳情 與 .字頭 對應', t => {
 });
 
 test('上下文條目詳情、展開', t => {
-  const 條目 = query字頭('鬧')[0];
+  const 條目 = query字頭('鬧', { 上下文: false })[0];
   t.is(條目.字頭, '閙〈鬧〉');
-  t.deepEqual(條目.釋義上下文?.[1].字頭詳情(), ['閙', '〈鬧〉']);
+  t.deepEqual(條目.釋義上下文?.map(x => x.字頭), ['𠆴', '閙〈鬧〉']);
+  t.deepEqual(條目.釋義上下文![1].字頭詳情(), ['閙', '〈鬧〉']);
 
   const expanded = 條目.expand釋義上下文();
-  t.deepEqual(expanded[1], 條目);
-  t.deepEqual(expanded[0], query字頭('𠆴')[0]);
+  t.deepEqual(expanded, query字頭('鬧'));
 });
 
 test('查詢含校勘的反切', t => {
@@ -196,6 +200,12 @@ test('查詢來源文獻信息', t => {
   );
 });
 
+test('查詢字頭時給出異體', t => {
+  const res = query字頭('餘', ['余']);
+  // 231 小韻「余」排在「餘」前，但結果中「餘」應在最前
+  t.deepEqual(res.map(x => [x.字頭, x.小韻號]), [['餘', '231'], ['余', '231'], ['余', '789']]);
+});
+
 test('資料中全部音韻地位均合法', t => {
   for (const { 母, 呼, 等, 類, 韻, 聲 } of iter音韻地位()) {
     t.notThrows(() => {
@@ -226,11 +236,11 @@ test('根據原資料檔查詢所有字頭', t => {
 
     const [字頭原貌, ...各校勘] = parse字頭詳情(字頭1);
     if (字頭原貌) {
-      t.true(query字頭(字頭原貌).some(isEqual), `${字頭原貌}: ${line}`);
+      t.true(query字頭(字頭原貌, { 上下文: false }).some(isEqual), `${字頭原貌}: ${line}`);
     }
     for (const 校勘 of 各校勘) {
       if (校勘 !== '｛｝') {
-        t.true(query字頭(校勘.slice(1, -1)).some(isEqual), `${校勘}: ${line}`);
+        t.true(query字頭(校勘.slice(1, -1), { 上下文: false }).some(isEqual), `${校勘}: ${line}`);
       }
     }
   }

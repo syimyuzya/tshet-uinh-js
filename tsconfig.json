@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "target": "es2020",
+    "target": "es2023",
     // NOTE Rollup Typescript plugin complains about "outDir" for some reason (to be investigated)
     //"outDir": "build/esnext",
     // NOTE Needed if outDir is not specified
@@ -40,7 +40,7 @@
     // "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     // "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
 
-    "lib": ["es2020"],
+    "lib": ["es2023"],
     "types": [],
     "typeRoots": ["node_modules/@types", "src/types"]
   },
