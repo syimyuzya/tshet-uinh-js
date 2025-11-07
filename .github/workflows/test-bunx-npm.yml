@@ -10,4 +10,4 @@ jobs:
       with:
         bun-version: latest
     - name: Test bunx npm
-      run: bunx npm --version
+      run: bunx npm@^11.6.2 --version
