@@ -1,0 +1,10 @@
+name: Test bunx npm
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Test bunx npm
+      run: bunx npm --version
