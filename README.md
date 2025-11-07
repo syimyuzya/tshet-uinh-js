@@ -21,7 +21,7 @@ $ npm install tshet-uinh
 ```
 
 ```javascript
-> import TshetUinh from 'tshet-uinh';
+> import * as TshetUinh from 'tshet-uinh';
 ```
 
 ## Documentation
